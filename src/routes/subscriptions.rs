@@ -10,21 +10,20 @@ pub struct FormData {
     name: String,
 }
 
+#[tracing::instrument(
+    name = "Adding a new subscriber",
+    skip(form, pool),
+    fields(
+        request_id = %Uuid::new_v4(),
+        email = %form.email,
+        name = %form.name
+    )
+)]
 pub async fn subscribe(
     form: web::Form<FormData>,
     pool: web::Data<PgPool>,
 ) -> Result<HttpResponse, HttpResponse> {
-    let request_id = Uuid::new_v4();
-    let request_span = tracing::info_span!(
-        "Adding a new subscriber.",
-        %request_id,
-        email = %form.email,
-        name = %form.name
-    );
-    let _request_span_guard = request_span.enter();
-
     let query_span = tracing::info_span!("Saving new subscriber details to the database");
-    tracing::info!("Saving new subscriber details in the database");
     sqlx::query!(
         r#"
         INSERT INTO subscriptions (id, email, name, subscribed_at)
