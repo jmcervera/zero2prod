@@ -15,8 +15,8 @@ impl TryInto<NewSubscriber> for FormData {
     type Error = String;
 
     fn try_into(self) -> Result<NewSubscriber, Self::Error> {
-        let name = SubscriberName::parse(form.name)?;
-        let email = SubscriberEmail::parse(form.email)?;
+        let name = SubscriberName::parse(self.name)?;
+        let email = SubscriberEmail::parse(self.email)?;
         Ok(NewSubscriber { email, name })
     }
 }
@@ -42,12 +42,6 @@ pub async fn subscribe(
         .await
         .map_err(|_| HttpResponse::InternalServerError().finish())?;
     Ok(HttpResponse::Ok().finish())
-}
-
-pub fn parse_subscriber(form: FormData) -> Result<NewSubscriber, String> {
-    let name = SubscriberName::parse(form.name)?;
-    let email = SubscriberEmail::parse(form.email)?;
-    Ok(NewSubscriber { email, name })
 }
 
 #[tracing::instrument(
