@@ -136,7 +136,7 @@ async fn subscribe_returns_a_400_when_fields_are_present_but_empty() {
             400,
             response.status().as_u16(),
             // Additional customised error message on test failure
-            "The API did not return a 200 OK when the payload was {}",
+            "The API did not return a 400 Bad Request when the payload was {}",
             description
         );
     }
