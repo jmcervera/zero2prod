@@ -38,5 +38,6 @@ fake = "~2.3"
 lazy_static = "1.4.0"
 quickcheck = "0.9.2"
 quickcheck_macros = "0.9.1"
+serde_json = "1.0.62"
 tokio = { version = "1", features = ["macros"] }
 wiremock = "0.4.9"
