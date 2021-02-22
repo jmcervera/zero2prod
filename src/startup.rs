@@ -9,10 +9,10 @@ use sqlx::PgPool;
 use std::net::TcpListener;
 use tracing_actix_web::TracingLogger;
 
+use crate::configuration::DatabaseSettings;
+
 pub async fn build(configuration: Settings) -> Result<Server, std::io::Error> {
-    let connection_pool = PgPoolOptions::new()
-        .connect_timeout(std::time::Duration::from_secs(2))
-        .connect_with(configuration.database.with_db())
+    let connection_pool = get_connection_pool(&configuration.database)
         .await
         .expect("Failed to connect to Postgres.");
 
@@ -32,6 +32,13 @@ pub async fn build(configuration: Settings) -> Result<Server, std::io::Error> {
     );
     let listener = TcpListener::bind(address)?;
     run(listener, connection_pool, email_client)
+}
+
+pub async fn get_connection_pool(configuration: &DatabaseSettings) -> Result<PgPool, sqlx::Error> {
+    PgPoolOptions::new()
+        .connect_timeout(std::time::Duration::from_secs(2))
+        .connect_with(configuration.with_db())
+        .await
 }
 
 pub fn run(
