@@ -5,7 +5,7 @@ async fn greet(req: HttpRequest) -> impl Responder {
     format!("Hello, {}!", &name)
 }
 
-#[actix_web::main]
+#[tokio::main]
 async fn main() -> std::io::Result<()> {
     println!("Server running at http://127.0.0.1:8080");
     HttpServer::new(|| {
